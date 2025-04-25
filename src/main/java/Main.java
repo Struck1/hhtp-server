@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,6 +16,7 @@ public class Main {
             //   // Since the tester restarts your program quite often, setting SO_REUSEADDR
             //   // ensures that we don't run into 'Address already in use' errors
             //
+            String httpResponse = "";
             serverSocket.setReuseAddress(true);
             System.out.println("wait new connection");
             Socket client = serverSocket.accept(); // Wait for connection from client.
@@ -22,11 +24,19 @@ public class Main {
             BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
             BufferedWriter output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 
+
             String line = input.readLine();
             System.out.println("Request: " + line);
-            
+            String[] parseLine = line.split(" ");
+            String metod = parseLine[0];
+            String path = parseLine[1];
 
-            String httpResponse = "HTTP/1.1 200 OK\r\n\r\n";
+            if(Objects.equals(path, "/")) {
+                httpResponse = "HTTP/1.1 200 OK\r\n\r\n";
+            } else {
+                httpResponse = "HTTP/1.1 404 Not Found\r\n\r\n";
+            }
+
             output.write(httpResponse);
             output.flush();
 
