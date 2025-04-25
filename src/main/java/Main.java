@@ -1,4 +1,4 @@
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -17,7 +17,19 @@ public class Main {
             //
             serverSocket.setReuseAddress(true);
             System.out.println("wait new connection");
-            serverSocket.accept(); // Wait for connection from client.
+            Socket client = serverSocket.accept(); // Wait for connection from client.
+
+            BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            BufferedWriter output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+
+            String line = input.readLine();
+            System.out.println("Request: " + line);
+            
+
+            String httpResponse = "HTTP/1.1 200 OK\r\n\r\n";
+            output.write(httpResponse);
+            output.flush();
+
             System.out.println("accepted new connection");
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
