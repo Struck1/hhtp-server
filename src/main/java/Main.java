@@ -34,7 +34,7 @@ public class Main {
             String[] endPoint = path.split("/");
 
 
-            if (Objects.equals(endPoint[1], "echo")) {
+            if (Objects.equals(endPoint[1], "echo") && endPoint.length > 2) {
                 httpResponse = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + endPoint[2].getBytes(StandardCharsets.UTF_8).length +"\r\n\r\n" + endPoint[2];
 
             } else {
