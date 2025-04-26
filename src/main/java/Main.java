@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Main {
@@ -25,10 +26,17 @@ public class Main {
             BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
             BufferedWriter output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 
+            ArrayList<String> headers = new ArrayList<>();
+            String line;
 
-            String line = input.readLine();
-            System.out.println("Request: " + line);
-            String[] parseLine = line.split(" ");
+            while ((line = input.readLine()) != null && !line.isEmpty()) {
+                headers.add(line);
+            }
+
+            System.out.println("Request: " + headers.getFirst());
+            String[] parseLine = headers.getFirst().split(" ");
+            String userAgent = headers.get(3);
+            String[] parseUserAgent = userAgent.split(":");
             String metod = parseLine[0];
             String path = parseLine[1];
             String[] endPoint = path.split("/");
@@ -36,14 +44,26 @@ public class Main {
 
             if(Objects.equals(path, "/")){
                 httpResponse = "HTTP/1.1 200 OK\r\n\r\n";
-            } else if (endPoint.length > 2 && Objects.equals(endPoint[1], "echo")) {
-                String body = endPoint[2];
-                int contentLength = body.getBytes(StandardCharsets.UTF_8).length;
-                httpResponse = "HTTP/1.1 200 OK\r\n" +
-                        "Content-Type: text/plain\r\n" +
-                        "Content-Length: " + contentLength + "\r\n" +
-                        "\r\n" +
-                        body;
+            } else if (endPoint.length > 2  || Objects.equals(path, "/user-agent")) {
+                if(Objects.equals(endPoint[1], "echo")) {
+                    String body = endPoint[2];
+                    int contentLength = body.getBytes(StandardCharsets.UTF_8).length;
+                    httpResponse = "HTTP/1.1 200 OK\r\n" +
+                            "Content-Type: text/plain\r\n" +
+                            "Content-Length: " + contentLength + "\r\n" +
+                            "\r\n" +
+                            body;
+                }
+                if(parseUserAgent.length > 0 && Objects.equals(endPoint[1], "user-agent")) {
+                    String body = parseUserAgent[1].trim();
+                    int contentLength = body.getBytes(StandardCharsets.UTF_8).length;
+                    httpResponse = "HTTP/1.1 200 OK\r\n" +
+                            "Content-Type: text/plain\r\n" +
+                            "Content-Length: " + contentLength + "\r\n" +
+                            "\r\n" +
+                            body;
+                }
+
             } else {
                 httpResponse = "HTTP/1.1 404 Not Found\r\n\r\n";
             }
