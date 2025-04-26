@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 public class Main {
@@ -30,9 +31,12 @@ public class Main {
             String[] parseLine = line.split(" ");
             String metod = parseLine[0];
             String path = parseLine[1];
+            String[] endPoint = path.split("/");
 
-            if(Objects.equals(path, "/")) {
-                httpResponse = "HTTP/1.1 200 OK\r\n\r\n";
+
+            if (Objects.equals(endPoint[1], "echo") && Objects.equals(endPoint[2], "abc")) {
+                httpResponse = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 3\r\n";
+
             } else {
                 httpResponse = "HTTP/1.1 404 Not Found\r\n\r\n";
             }
