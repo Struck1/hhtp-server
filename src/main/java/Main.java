@@ -33,16 +33,14 @@ public class Main {
             String path = parseLine[1];
             String[] endPoint = path.split("/");
 
-
-            if (endPoint.length > 2  ) {
-                if (Objects.equals(endPoint[1], "echo")) {
+            if (endPoint.length > 1) {
+                if (endPoint.length > 2 && Objects.equals(endPoint[1], "echo")) {
                     httpResponse = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + endPoint[2].getBytes(StandardCharsets.UTF_8).length +"\r\n\r\n" + endPoint[2];
-
                 } else {
                     httpResponse = "HTTP/1.1 404 Not Found\r\n\r\n";
                 }
             } else if(endPoint.length == 1 && Objects.equals(endPoint[0], "/")) {
-                httpResponse = "HTTP/1.1 200 OK\\r\\n";
+                httpResponse = "HTTP/1.1 200 OK\r\n";
             }
 
             output.write(httpResponse);
