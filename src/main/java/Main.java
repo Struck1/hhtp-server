@@ -34,15 +34,20 @@ public class Main {
             String[] endPoint = path.split("/");
 
 
-            if (endPoint.length > 1) {
-                if (endPoint.length > 2 && Objects.equals(endPoint[1], "echo")) {
-                    httpResponse = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: " + endPoint[2].getBytes(StandardCharsets.UTF_8).length +"\r\n\r\n" + endPoint[2];
-                } else {
-                    httpResponse = "HTTP/1.1 404 Not Found\r\n\r\n";
-                }
-            } else if( Objects.equals(path, "/")) {
-                httpResponse = "HTTP/1.1 200 OK\r\n";
+            if(Objects.equals(path, "/")){
+                httpResponse = "HTTP/1.1 200 OK\r\n\r\n";
+            } else if (endPoint.length > 2 && Objects.equals(endPoint[1], "echo")) {
+                String body = endPoint[2];
+                int contentLength = body.getBytes(StandardCharsets.UTF_8).length;
+                httpResponse = "HTTP/1.1 200 OK\r\n" +
+                        "Content-Type: text/plain\r\n" +
+                        "Content-Length: " + contentLength + "\r\n" +
+                        "\r\n" +
+                        body;
+            } else {
+                httpResponse = "HTTP/1.1 404 Not Found\r\n\r\n";
             }
+
 
             output.write(httpResponse);
             output.flush();
