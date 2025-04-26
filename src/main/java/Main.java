@@ -35,6 +35,7 @@ public class Main {
 
             System.out.println("Request: " + headers.getFirst());
             String[] parseLine = headers.getFirst().split(" ");
+            if(headers.size() < 3) return;
             String userAgent = headers.get(3);
             String[] parseUserAgent = userAgent.split(":");
             String metod = parseLine[0];
