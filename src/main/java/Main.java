@@ -35,18 +35,21 @@ public class Main {
 
             System.out.println("Request: " + headers.getFirst());
             String[] parseLine = headers.getFirst().split(" ");
-            if(headers.size() < 3) return;
-            String userAgent = headers.get(3);
-            String[] parseUserAgent = userAgent.split(":");
-            String metod = parseLine[0];
+            String userAgent = null;
+            for (String header : headers) {
+                if (header.startsWith("User-Agent:")) {
+                    userAgent = header.split(":")[1].trim();
+                }
+            }
+
             String path = parseLine[1];
             String[] endPoint = path.split("/");
 
 
-            if(Objects.equals(path, "/")){
+            if (Objects.equals(path, "/")) {
                 httpResponse = "HTTP/1.1 200 OK\r\n\r\n";
-            } else if (endPoint.length > 2  || Objects.equals(path, "/user-agent")) {
-                if(Objects.equals(endPoint[1], "echo")) {
+            } else if (endPoint.length > 2 || Objects.equals(path, "/user-agent")) {
+                if (Objects.equals(endPoint[1], "echo")) {
                     String body = endPoint[2];
                     int contentLength = body.getBytes(StandardCharsets.UTF_8).length;
                     httpResponse = "HTTP/1.1 200 OK\r\n" +
@@ -55,14 +58,13 @@ public class Main {
                             "\r\n" +
                             body;
                 }
-                if(parseUserAgent.length > 0 && Objects.equals(endPoint[1], "user-agent")) {
-                    String body = parseUserAgent[1].trim();
-                    int contentLength = body.getBytes(StandardCharsets.UTF_8).length;
+                if (userAgent != null && Objects.equals(endPoint[1], "user-agent")) {
+                    int contentLength = userAgent.getBytes(StandardCharsets.UTF_8).length;
                     httpResponse = "HTTP/1.1 200 OK\r\n" +
                             "Content-Type: text/plain\r\n" +
                             "Content-Length: " + contentLength + "\r\n" +
                             "\r\n" +
-                            body;
+                            userAgent;
                 }
 
             } else {
