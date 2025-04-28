@@ -41,7 +41,7 @@ public class HandleClient {
         } else if (request.path.startsWith("/files/")) {
             String[] path = request.path.split("/");
             if (path.length >= 3) {
-                File file = new File(args[0], path[2]);
+                File file = new File(args[1], path[2]);
                 try {
                     if (file.exists()) {
                         byte[] bytes = Files.readAllBytes(file.toPath());
