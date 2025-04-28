@@ -13,7 +13,7 @@ public class Main {
                 Socket socket = serverSocket.accept(); // Wait for connection from client.
                 new Thread(() -> {
                     try {
-                        HandleClient.handleClient(socket);
+                        HandleClient.handleClient(socket, args);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
